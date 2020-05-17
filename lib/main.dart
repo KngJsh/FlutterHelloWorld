@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:english_words/english_words.dart';
+import 'package:tutorial/screens/random_words.dart';
+import 'package:tutorial/screens/show_image.dart';
+import 'package:tutorial/screens/show_network_image.dart';
 
 void main() => runApp(MyApp());
 
@@ -7,108 +9,53 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Startup Name Generator',
-//      darkTheme: ThemeData.dark(),
-    theme: ThemeData(
-      primaryColor: Colors.green,
-      scaffoldBackgroundColor: Colors.yellow,
-    ),
-      home: RandomWords(),
+      title: 'Flutter Home',
+      darkTheme: ThemeData.dark(),
+      home: LinkPage(),
     );
   }
 }
 
-class RandomWordsState extends State<RandomWords> {
-  final _suggestions = <WordPair>[];
-  final _biggerFont = const TextStyle(fontSize: 18.0);
-  final Set<WordPair> _saved = Set<WordPair>();
-
-  Widget _buildSuggestions() {
-    return ListView.builder(
-        padding: const EdgeInsets.all(16.0),
-        itemBuilder: /*1*/ (context, i) {
-          if (i.isOdd) return Divider();
-          /*2*/
-
-          final index = i ~/ 2; /*3*/
-          if (index >= _suggestions.length) {
-            _suggestions.addAll(generateWordPairs().take(10)); /*4*/
-          }
-          return _buildRow(_suggestions[index]);
-        });
-  }
-
-  Widget _buildRow(WordPair pair) {
-    final bool alreadySaved = _saved.contains(pair);
-    return ListTile(
-      title: Text(
-        pair.asPascalCase,
-        style: _biggerFont,
-      ),
-      trailing: Icon(
-        alreadySaved ? Icons.favorite : Icons.favorite_border,
-        color: alreadySaved ? Colors.red : null,
-      ),
-      leading: Icon(
-        Icons.receipt,
-        color: Colors.black87,
-      ),
-      onTap: () {
-        setState(() {
-          if (alreadySaved) {
-          _saved.remove(pair);
-          } else {
-            _saved.add(pair);
-          }
-        });
-      },
-    );
-  }
-
+class LinkPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Startup Name Generator'),
-        actions: <Widget>[
-          IconButton(icon: Icon(Icons.list), onPressed: _pushSaved),
-        ],
+        title: Text('Link Page'),
       ),
-      body: _buildSuggestions(),
-    );
-  }
-
-  void _pushSaved() {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (BuildContext context) {
-          final Iterable<ListTile> tiles = _saved.map(
-            (WordPair pair) {
-              return ListTile(
-                title: Text(
-                  pair.asPascalCase,
-                  style: _biggerFont,
-                ),
+      body: Center(
+          child: new Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          new RaisedButton(
+            child: Text('Open RandomWords'),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RandomWords()),
               );
             },
-          );
-          final List<Widget> divided = ListTile.divideTiles(
-            context: context,
-            tiles: tiles,
-          ).toList();
-          return Scaffold(
-            appBar: AppBar(
-              title: Text('Saved Suggestions'),
-            ),
-            body: ListView(children: divided),
-          );
-        },
-      ),
+          ),
+          new RaisedButton(
+            child: Text('Open Show Image'),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ShowImage()),
+              );
+            },
+          ),
+          new RaisedButton(
+            child: Text('Open Show Network Image'),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ShowNetworkImage()),
+              );
+            },
+          )
+        ],
+      )),
     );
   }
-}
-
-class RandomWords extends StatefulWidget {
-  @override
-  RandomWordsState createState() => RandomWordsState();
 }
